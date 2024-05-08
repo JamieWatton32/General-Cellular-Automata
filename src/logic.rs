@@ -1,7 +1,7 @@
-use crate::materials::Material;
+use crate::materials::{self, Material};
 
 
-
+//A cell is a object that contains a material and a rgb color. 
 #[derive(Clone, Debug, Copy)]
 pub struct Cell{
     pub material:Material,
@@ -10,20 +10,18 @@ pub struct Cell{
     pub blue:u8,
 } 
 
-
 impl Cell{
-    fn new(material:Material) -> Cell{
+    pub fn new(material:Material,red: u8, green: u8, blue: u8) -> Cell{
         Cell{
             material,
-            red:0,
-            green:0,
-            blue:0,
+            red,
+            green,
+            blue,
         }
     }
-
-    pub fn update(&self, sim: Simulator) {
-        self.material.update(*self, sim)
-    }
+    // pub fn update(&self, sim: Simulator) {
+    //     self.material.update(*self)
+    // }
 }
 
 pub static IS_EMPTY: Cell = Cell{
@@ -33,6 +31,8 @@ pub static IS_EMPTY: Cell = Cell{
     blue:0,
 };
 
+//Simulator is the connection between the cells and the grid. It comp[utes the changes on the grid between the cells
+//it will be the primary interface used to implement the logic. 
 #[derive(Debug)]
 pub struct Simulator<'a>{
     pub(crate) x: i32,
@@ -43,73 +43,39 @@ pub struct Simulator<'a>{
 
 
 impl <'a>Simulator<'a>{
-    pub fn fetch_cell(&mut self, dx:i32, dy:i32) -> Cell{
-        if dx < 0 || dy <0 {
-            panic!("Cell out of bounds!")
-        }
-
-        let new_x = self.x + dx;
-        let new_y = self.y + dy;
-
-        if new_x < 0 || new_x > self.grid.width - 1 || new_y < 0 || new_y > self.grid.height - 1 {
-            return Cell {
-                material: Material::Empty,
-                red: 0,
-                green: 0,
-                blue: 0,
-            };
-        }
-        self.grid.get_cell(new_x, new_y)
-    }
-
-    pub fn set_cell(&mut self, dx:i32, dy:i32, cell:Cell){
-        if dx < 0 || dy <0 {
-            panic!("Cell out of bounds!")
-        }
-        let new_x = self.x + dx;
-        let new_y = self.y + dy;
-        if new_x < 0 || new_x > self.grid.width - 1 || new_y < 0 || new_y > self.grid.height - 1 {
-            return;
-        }
-        
-        let new_idx = self.grid.get_index(new_x, new_y);
-        self.grid.cells[new_idx] = cell;
-
-    }
-
+   
 }
+
+    
+//Grid is the thing holds each cell, it contains the data for the simulation.
 #[derive(Debug)]
 pub struct Grid{
-    width: i32,
-    height:i32,
-    cells: Vec<Cell>,
+    pub width: i32,
+    pub height:i32,
+    pub cells: Vec<Cell>,
 }
 
 //public methods
+
 impl Grid {
     pub fn new(width: i32, height: i32) -> Grid{
-        let cells = (0..width * height).map(|_i| IS_EMPTY).collect();
+        let cells:Vec<Cell> = (0..width*height).map(|_i| IS_EMPTY).collect(); // this will create a vector of cells that is 
         Grid{
             width:width,
             height:height,
             cells:cells
         }
     }
-    pub fn width(&self) -> i32{
-        self.width
-    }
-    pub fn height(&self) -> i32{
+
+    pub fn height(&self) -> i32 {
         self.height
     }
-    pub fn get_index(&self, x:i32,y:i32) -> usize{
-        let idx = x * self.height + y;
-        idx as usize
-    }
-    pub fn get_cell(&self,x:i32, y:i32) -> Cell{
-        let idx = self.get_index(x, y);
-        self.cells[idx]
+    
+    pub fn width(&self) ->i32 {
+        self.width
     }
 }
+
 
 
 
