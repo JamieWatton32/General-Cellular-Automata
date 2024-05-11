@@ -1,8 +1,7 @@
 
-use crate::{api::Api, logic::{Cell, IS_EMPTY}};
+use crate::{api::Api,logic::{Cell, IS_EMPTY}};
 
-
-#[derive(Clone, Debug, Copy, PartialEq, Eq)]
+#[derive(Clone, Copy, Debug, PartialEq, Eq)]
 pub enum Material {
     Empty,
     Sand,
@@ -22,12 +21,15 @@ pub fn update_sand(cell: Cell, mut api:Api) {
     let dy = 1;// just vertical
 
     let below = api.get_neighbour(dx, dy); // retrieving cell data from pos (cell.x+dx, cell.y+dy)
-    
-
-    if below == IS_EMPTY{
-        api.get_neighbour(dx,dy);
-        api.set_cell(dx, dy, cell)
+    println!("below: {:?} x:{},y:{}",below,api.x,api.y);
+    if below.material == Material::Empty{
+        api.set_cell(0, 0, IS_EMPTY);
+        api.set_cell(0, 1, cell);
+    } else{
+        println!("below: {:?} x:{},y:{}",below,api.x,api.y);
+        api.set_cell(0,0, cell);
     }
    
 }
+
 
