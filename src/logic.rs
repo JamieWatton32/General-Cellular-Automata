@@ -1,28 +1,31 @@
-use crate::{grid::Grid, materials::Material};
+use crate::{api::Api, materials::Material};
 
 
 
 
 //A cell is a object that contains a material and a rgb color. 
-#[derive(Clone, Debug, Copy,PartialEq)]
+#[derive(Clone, Copy, Debug, PartialEq, Eq)]
 pub struct Cell{
     pub material:Material, // material of the cell
-    pub x: i32,
-    pub y: i32,
 } 
 
+pub static IS_EMPTY: Cell = Cell{
+    material:Material::Empty
+};
+
+
 impl Cell{
-    pub fn new(material: Material,x:i32,y:i32)-> Cell{
+    pub fn _new(material: Material)-> Cell{
         Cell {
             material,
-            x,
-            y
         }
     }
 
-    pub fn update_cells(&self, grid: &Grid) {
-        self.material.update_material(self, grid);
+    pub fn update(&self, api:Api){
+        self.material.update_material(*self, api)
     }
+
+   
     
 }
 

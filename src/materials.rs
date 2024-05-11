@@ -1,7 +1,5 @@
 
-use std::io::Empty;
-
-use crate::{grid::Grid, logic::Cell, WINDOW_HEIGHT};
+use crate::{api::Api, logic::{Cell, IS_EMPTY}};
 
 
 #[derive(Clone, Debug, Copy, PartialEq, Eq)]
@@ -11,27 +9,25 @@ pub enum Material {
 }
 
 impl Material {
-    pub fn update_material(&self, cell: &Cell, grid: &Grid) {
+    pub fn update_material(&self, cell:Cell, api:Api) {
         match self {
             Material::Empty => {}
-            Material::Sand => {update_sand(cell.clone(),grid.clone())},
+            Material::Sand => {update_sand(cell,api)},
         }
     }
 }
 
-pub fn update_sand(mut cell: Cell,grid:Grid) {
-    if cell.x > WINDOW_HEIGHT -1 
-    || cell.y > WINDOW_HEIGHT - 1{
-        panic!("out of bounds!");
-    }
-    println!("{:?} cell in sand ",cell);
+pub fn update_sand(cell: Cell, mut api:Api) {
+    let dx = 0;// no horizontal
+    let dy = 1;// just vertical
 
-    let dx = 0;
-    let dy = 1;
-    if grid.get_state(dx, dy,cell).material == Material::Empty{
-        cell.material = Material::Sand;
-        cell.x += dx as i32;
-        cell.y += dy as i32;
+    let below = api.get_neighbour(dx, dy); // retrieving cell data from pos (cell.x+dx, cell.y+dy)
+    
+
+    if below == IS_EMPTY{
+        api.get_neighbour(dx,dy);
+        api.set_cell(dx, dy, cell)
     }
+   
 }
 

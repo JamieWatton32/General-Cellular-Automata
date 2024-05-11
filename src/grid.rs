@@ -1,8 +1,8 @@
-use crate::logic::Cell;
-use crate::materials::Material;
+use crate::api::Api;
+use crate::logic::{Cell, IS_EMPTY};
+
 
 #[derive(Clone, Debug, PartialEq)]
-
 pub struct Grid {
     pub rows: i32,
     pub cols: i32,
@@ -13,10 +13,10 @@ impl Grid {
 
     pub fn new(rows: i32, cols: i32) -> Self {
         let mut blank_grid = vec![];
-        for i in 0..rows{
+        for _ in 0..rows{
             let mut row = vec![];
-            for j in 0..cols{   
-                row.push(Cell::new(Material::Empty,i,j))
+            for _ in 0..cols{   
+                row.push(IS_EMPTY);
             }
             blank_grid.push(row);
         }
@@ -26,22 +26,45 @@ impl Grid {
             cells:blank_grid 
         } 
     }
-
-    pub fn update_grid(&mut self, x: usize, y: usize){
-        self.cells[x][y].update_cells(self)
+    pub fn cell_state(&self,x:i32,y:i32)->Cell{
+        self.cells[x as usize][y as usize]
     }
 
-    pub fn get_state(&self,dx: usize,dy: usize,cell: Cell)-> Cell{
-        if dx > 1 || dy > 1{
-            panic!("Out of cell neighbour range!")
+    pub fn update_grid(&mut self){
+        for x in 0..self.rows-1{
+            for y in 0..self.cols-1{
+                let cell = self.get_cell(x, y);
+                Grid::update_cell(
+                    cell,
+                    Api{
+                        x,
+                        y,
+                        grid:self
+                    }
+                );
+                }
+            }
         }
-        println!("{:?} cell in function",cell);
-        let new_x = self.cells[cell.x as usize][cell.y as usize].x + dx as i32 ;
-        println!("newx {new_x}");
-        let new_y = self.cells[cell.x as usize][cell.y as usize].y + dy as i32 ;
-        println!("newy {new_y}");
-        println!("{:?} cell with new x y",self.cells[new_x as usize][new_y as usize]);
-        self.cells[new_x as usize][new_y as usize]
+
+        fn _rows(self)->i32{
+            self.rows
+        }
+        fn _cols(self)-> i32{
+            self.cols
+        }
+
+        fn get_cell(&self,x:i32, y:i32) -> Cell{
+            self.cells[x as usize][y as usize]
+        }
+    
+        fn update_cell(cell:Cell, api:Api){
+            cell.update(api);
+        }
     }
-}
+
+ 
+
+
+
+
 
