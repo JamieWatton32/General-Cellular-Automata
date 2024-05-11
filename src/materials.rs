@@ -1,4 +1,7 @@
 
+use rand::{random, Rng};
+use sdl2::libc::rand;
+
 use crate::{api::Api,logic::{Cell, IS_EMPTY}};
 
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
@@ -17,19 +20,25 @@ impl Material {
 }
 
 pub fn update_sand(cell: Cell, mut api:Api) {
-    let dx = 0;// no horizontal
+    let dx = rand::thread_rng().gen_range(-1..=1);
     let dy = 1;// just vertical
 
-    let below = api.get_neighbour(dx, dy); // retrieving cell data from pos (cell.x+dx, cell.y+dy)
-    println!("below: {:?} x:{},y:{}",below,api.x,api.y);
+    let below = api.get_neighbour(0, dy); // retrieving cell data from pos (cell.x+dx, cell.y+dy)
     if below.material == Material::Empty{
         api.set_cell(0, 0, IS_EMPTY);
-        api.set_cell(0, 1, cell);
-    } else{
-        println!("below: {:?} x:{},y:{}",below,api.x,api.y);
-        api.set_cell(0,0, cell);
+        api.set_cell(0, dy, cell);
+        return
+        
+    } else if api.get_neighbour(dx, 1).material == Material::Sand{
+        api.set_cell(0, 0, IS_EMPTY);
+        api.set_cell(dx, -1, cell);
+    }else if api.get_neighbour(dx, -1)m{
+        api.set_cell(0, 0, cell);
+        return
     }
+         
+} 
    
-}
+
 
 

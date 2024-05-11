@@ -32,12 +32,12 @@ impl Grid {
     }
 
     pub fn update_grid(&mut self) {
-        for x in 0..self.rows {
-            for y in 0..self.cols {
+        for x in 0..self.rows-1 {
+            for y in 0..self.cols-1 {
                 let cell = self.get_cell(x, y);
-                if cell != IS_EMPTY{
-                    println!("{:?}",cell);
-                }
+                // if cell != IS_EMPTY{
+                //     println!("{:?}",cell);
+                // }
                 Grid::update_cell(cell, Api { x, y, grid: self });
             }
         }
