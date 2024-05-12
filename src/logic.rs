@@ -7,10 +7,12 @@ use crate::{api::Api, materials::Material};
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
 pub struct Cell{
     pub material:Material, // material of the cell
+    pub active: bool,
 } 
 
 pub static IS_EMPTY: Cell = Cell{
-    material:Material::Empty
+    material:Material::Empty,
+    active:false
 };
 
 
@@ -18,6 +20,7 @@ impl Cell{
     pub fn _new(material: Material)-> Cell{
         Cell {
             material,
+            active:true,
         }
     }
 
