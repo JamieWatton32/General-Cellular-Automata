@@ -3,56 +3,44 @@ use sdl2::sys::Window;
 
 use crate::api::Api;
 use crate::logic::{Cell, IS_EMPTY};
+use crate::PARTICLE_SIZE;
 
 #[derive(Clone, Debug, PartialEq)]
 pub struct Grid {
-    pub rows: i32,
-    pub cols: i32,
-    pub cells: Vec<Vec<Cell>>,
+    pub width: i32,
+    pub height: i32,
+    pub cells: Vec<Cell>,
 }
 
 impl Grid {
-    pub fn new(rows: i32, cols: i32) -> Self {
-        let mut blank_grid = vec![];
-        for _ in 0..rows {
-            let mut row = vec![];
-            for _ in 0..cols {
-                row.push(IS_EMPTY);
-            }
-            blank_grid.push(row);
-        }
+    pub fn new(width: i32, height: i32) -> Self {
+        let cells:Vec<Cell> = (0..width*height).map(|_| IS_EMPTY).collect();
         Grid {
-            rows,
-            cols,
-            cells: blank_grid,
+            width,
+            height,
+            cells,
         }
     }
-    pub fn cell_state(&self, x: i32, y: i32) -> Cell {
-        self.cells[x as usize][y as usize]
-    }
-
+   
+    
     pub fn update_grid(&mut self) {
-        for x in 0..self.rows-1 {
-            for y in 0..self.cols-1 {
-                let cell = self.get_cell(x, y);
-                // if cell != IS_EMPTY{
-                //     println!("{:?}",cell);
-                // }
+        for x in 0..self.width-PARTICLE_SIZE {
+            for y in 0..self.height-PARTICLE_SIZE {
+                let cell = self.get_cell_state(x, y);
                 Grid::update_cell(cell, Api { x, y, grid: self });
             }
         }
     }
 
-    fn _rows(self) -> i32 {
-        self.rows
-    }
-    fn _cols(self) -> i32 {
-        self.cols
+    pub fn get_cell_state(&self, x: i32, y: i32) -> Cell {
+       let idx = self.get_current_index(x, y);
+       self.cells[idx]
+
     }
 
-    fn get_cell(&self, x: i32, y: i32) -> Cell {
-        self.cells[x as usize][y as usize]
-    }
+    pub fn get_current_index(&self,x:i32,y:i32) -> usize{
+        (x * self.width + y) as usize
+    } 
 
     fn update_cell(cell: Cell, api: Api) {
         cell.update(api);
