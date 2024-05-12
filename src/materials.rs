@@ -29,12 +29,12 @@ pub fn update_sand(cell: Cell, mut api:Api) {
         api.set_cell(0, dy, cell);
         return
         
-    } else if api.get_neighbour(dx, 1).material == Material::Sand{
+    } else if api.get_neighbour(dx, 0).material == Material::Sand{
         api.set_cell(0, 0, IS_EMPTY);
-        api.set_cell(dx, -1, cell);
-    }else if api.get_neighbour(dx, -1)m{
-        api.set_cell(0, 0, cell);
-        return
+        api.set_cell(1, 0, cell);
+    }
+    else{
+        api.set_cell(0, -1, cell);
     }
          
 } 

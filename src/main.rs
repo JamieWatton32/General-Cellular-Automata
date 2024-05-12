@@ -24,7 +24,7 @@ fn draw_grid(canvas: &mut Canvas<sdl2::video::Window>, grid: &mut Grid) {
             match grid.cells[i as usize][j as usize].material {
                 Material::Sand => {
                     canvas.set_draw_color(Color::RGB(255, 255, 255));
-                    let rect = Rect::new(i as i32, j as i32, 2, 2);
+                    let rect = Rect::new(i as i32, j as i32, 1, 1);
                     canvas.draw_rect(rect).expect("SadAD");
                     canvas.fill_rect(rect).unwrap();
                 }
@@ -83,8 +83,8 @@ fn main() {
             let (x, y) = (event_pump.mouse_state().x(), event_pump.mouse_state().y());
 
             // Iterate over a square area with side length 11 around (x, y)
-            for i in (x - 10)..=(x + 10) {
-                for j in (y - 10)..=(y + 10) {
+            for i in (x )..=(x + 1) {
+                for j in (y )..=(y + 1) {
                     // Check if the current coordinates are within the bounds of the grid
                     if i >= 0
                         && i < grid.cells.len() as i32
