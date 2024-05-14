@@ -1,3 +1,5 @@
+use std::thread::panicking;
+
 use crate::{grid::Grid, logic::{Cell, IS_EMPTY}, materials::Material, PARTICLE_SIZE};
 #[derive(Debug)]
 pub struct Api<'a> {
@@ -13,10 +15,10 @@ impl <'a>Api<'a> {
 		}
 		let (neighbour_x,neighbour_y) = (self.x + dx, self.y + dy);
 
-		if neighbour_x > self.grid.width - PARTICLE_SIZE || neighbour_y > self.grid.height - PARTICLE_SIZE
+		if neighbour_x > self.grid.width-2*PARTICLE_SIZE || neighbour_y > self.grid.height-2*PARTICLE_SIZE 
 		|| neighbour_x < PARTICLE_SIZE || neighbour_y < PARTICLE_SIZE{
             return Cell {
-                material: Material::Empty,
+                material: Material::Wall,
                 count: self.grid.active,
             };
 		}
@@ -31,7 +33,7 @@ impl <'a>Api<'a> {
 		}
 		let (neighbour_x,neighbour_y) = (self.x + dx, self.y + dy);
 
-		if neighbour_x > self.grid.width - PARTICLE_SIZE || neighbour_y > self.grid.height - PARTICLE_SIZE
+		if neighbour_x > self.grid.width - PARTICLE_SIZE  || neighbour_y >= self.grid.height - PARTICLE_SIZE
 		|| neighbour_x < PARTICLE_SIZE || neighbour_y < PARTICLE_SIZE{
 			return
 		}
