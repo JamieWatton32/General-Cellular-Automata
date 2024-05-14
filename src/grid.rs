@@ -1,16 +1,12 @@
-use sdl2::render::Canvas;
-use sdl2::sys::Window;
-
-
 use crate::api::Api;
 use crate::logic::{Cell, IS_EMPTY};
 use crate::PARTICLE_SIZE;
-const UPDATE_FLAG_MASK: u8 = 0b10000000;
 #[derive(Clone, Debug, PartialEq)]
 pub struct Grid {
     pub width: i32,
     pub height: i32,
     pub cells: Vec<Cell>,
+    pub active: u8
 }
 
 impl Grid {
@@ -20,10 +16,10 @@ impl Grid {
             width,
             height,
             cells,
+            active:0,
         }
     }
    
-    
     pub fn update_grid(&mut self) {
         for x in 0..self.width-PARTICLE_SIZE {
             for y in 0..self.height-PARTICLE_SIZE {
@@ -32,10 +28,9 @@ impl Grid {
                 
             }
         }
+        self.active = self.active.wrapping_add(1); 
     }
       
-    
-
     pub fn get_cell_state(&self, x: i32, y: i32) -> Cell {
        let idx = self.get_current_index(x, y);
        self.cells[idx]
@@ -46,7 +41,13 @@ impl Grid {
         (x * self.width + y) as usize
     } 
 
-    fn update_cell(cell: Cell, api: Api) {
+    fn update_cell(cell: Cell, api: Api){
+        if cell.count.wrapping_sub(api.grid.active) == 1 {
+            return;
+        }
         cell.update(api);
+    
     }
 }
+
+
