@@ -10,7 +10,7 @@ pub struct Api<'a> {
 
 impl <'a>Api<'a> {
     pub fn get_neighbour(&mut self,dx: i32, dy: i32) -> Cell {
-		if dx > 2*PARTICLE_SIZE || dy > 2*PARTICLE_SIZE {
+		if dx > 6 || dy > 2*PARTICLE_SIZE {
             panic!("Out of cell neighbour range!") 
 		}
 		let (neighbour_x,neighbour_y) = (self.x + dx, self.y + dy);
@@ -28,7 +28,7 @@ impl <'a>Api<'a> {
 	}
 
 	pub fn set_cell(&mut self, dx:i32,dy:i32,cell:Cell){
-		if dx > 2*PARTICLE_SIZE || dy > 2*PARTICLE_SIZE  {
+		if dx > 6 || dy > 2  {
             panic!("Out of cell neighbour range!") 
 		}
 		let (neighbour_x,neighbour_y) = (self.x + dx, self.y + dy);
