@@ -1,6 +1,6 @@
-use std::thread::panicking;
 
-use crate::{grid::Grid, logic::{Cell, IS_EMPTY}, materials::Material, PARTICLE_SIZE};
+mod materials;
+use crate::{grid::Grid, logic::Cell, materials::Material, PARTICLE_SIZE};
 #[derive(Debug)]
 pub struct Api<'a> {
     pub x: i32,
@@ -40,8 +40,8 @@ impl <'a>Api<'a> {
 	
         
 		let idx = self.grid.get_current_index(neighbour_x,neighbour_y);
-        self.grid.cells[idx] = cell;
-        self.grid.cells[idx].count= self.grid.active.wrapping_add(1);
+        self.grid.cells[idx.0 as usize][idx.1 as usize] = cell;
+        self.grid.cells[idx.0 as usize][idx.1 as usize].count= self.grid.active.wrapping_add(1);
 		
 	}
 }
