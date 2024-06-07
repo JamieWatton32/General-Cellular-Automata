@@ -26,8 +26,8 @@ impl Grid {
     }
    
     pub fn update_grid(&mut self) {
-        for x in (0..self.width) {
-            for y in (0..self.height) {
+        for x in 0..self.width {
+            for y in 0..self.height {
                 let cell = self.get_cell_state(x, y);
                 Grid::update_cell(cell, Api { x, y, grid: self });
                 
