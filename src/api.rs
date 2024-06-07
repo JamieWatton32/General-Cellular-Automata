@@ -1,13 +1,14 @@
 
-mod materials;
-use crate::{grid::Grid, logic::Cell, materials::Material, PARTICLE_SIZE};
+use crate::{grid::Grid, logic::Cell, user_data::UserData, PARTICLE_SIZE};
+
+
 #[derive(Debug)]
 pub struct Api<'a> {
     pub x: i32,
     pub y: i32,
     pub grid: &'a mut Grid,
 }
-
+// getter and setter for grid cells
 impl <'a>Api<'a> {
     pub fn get_neighbour(&mut self,dx: i32, dy: i32) -> Cell {
 		if dx > 6 || dy > 2*PARTICLE_SIZE {
@@ -18,7 +19,7 @@ impl <'a>Api<'a> {
 		if neighbour_x > self.grid.width-2*PARTICLE_SIZE || neighbour_y > self.grid.height-2*PARTICLE_SIZE 
 		|| neighbour_x < PARTICLE_SIZE || neighbour_y < PARTICLE_SIZE{
             return Cell {
-                material: Material::Wall,
+                user_data: UserData::Wall,
                 count: self.grid.active,
             };
 		}

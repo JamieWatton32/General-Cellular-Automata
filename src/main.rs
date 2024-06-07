@@ -1,13 +1,14 @@
 mod api;
 mod grid;
 mod logic;
+mod user_data;
 
 
 use sdl2::video::Window;
 
 
 use grid::Grid;
-use materials::Material;
+use user_data::UserData;
 use sdl2::event::Event;
 use sdl2::keyboard::Keycode;
 use sdl2::mouse::MouseButton;
@@ -19,7 +20,7 @@ use std::time::{Duration, Instant};
 
 pub const HEIGHT: i32 = 720;
 pub const WIDTH: i32 = 720;
-pub const PARTICLE_SIZE: i32 = 1;
+pub const PARTICLE_SIZE: i32 = 2;
 
 
 fn draw_grid(canvas: &mut Canvas<Window>, grid: &mut Grid) {
@@ -31,20 +32,20 @@ fn draw_grid(canvas: &mut Canvas<Window>, grid: &mut Grid) {
                 PARTICLE_SIZE as u32,
                 PARTICLE_SIZE as u32,
             );
-            match grid.cells[i as usize][j as usize].material {
-                Material::Sand => {
+            match grid.cells[i as usize][j as usize].user_data {
+                UserData::Sand => {
                     canvas.set_draw_color(Color::RGB(194, 178, 128));
                     canvas.fill_rect(rect).unwrap();
                 }
-                Material::Water => {
+                UserData::Water => {
                     canvas.set_draw_color(Color::RGB(68, 238, 221));
                     canvas.fill_rect(rect).unwrap();
                 }
-                Material::Wall => {
+                UserData::Wall => {
                     canvas.set_draw_color(Color::RGB(128, 128, 128));
                     canvas.fill_rect(rect).unwrap();
                 }
-                Material::Empty => {}
+                UserData::Empty => {}
             }
         }
     }
@@ -68,7 +69,7 @@ fn main() {
     let mut grid = Grid::new(WIDTH, HEIGHT);
     let mut left_mouse_button_down = false;
     let mut right_down = false;
-    let mut spawn_material = Material::Empty;
+    let mut spawn_user_data = UserData::Empty;
 
     
     let mut last_fps_print_time = Instant::now();
@@ -87,10 +88,10 @@ fn main() {
                 Event::MouseButtonDown { mouse_btn, .. } => {
                     if mouse_btn == MouseButton::Left {
                         left_mouse_button_down = true;
-                        spawn_material = Material::Sand;
+                        spawn_user_data = UserData::Sand;
                     } else if mouse_btn == MouseButton::Right {
                         right_down = true;
-                        spawn_material = Material::Water;
+                        spawn_user_data = UserData::Water;
                     }
                 }
                 Event::MouseButtonUp { mouse_btn, .. } => {
@@ -103,9 +104,28 @@ fn main() {
                 _ => {}
             }
         }
+        if left_mouse_button_down == true || right_down==true {
+            let (x, y) = (event_pump.mouse_state().x(), event_pump.mouse_state().y());
+            let radius_squared = PARTICLE_SIZE*10; // Change this to adjust the radius of the circle
+
+            for i in (x - radius_squared)..=(x + radius_squared) {
+                for j in (y - radius_squared)..=(y + radius_squared) {
+
+                        // Ensure the cell is within the grid bounds
+                        if i > 0 && i < grid.width - PARTICLE_SIZE && j > 0 && j < grid.height - PARTICLE_SIZE {
+                            grid.cells[i as usize][j as usize].user_data = spawn_user_data;
+                        }
+                    
+                }
+            }
 
         
+        }
 
+
+        draw_grid(&mut canvas, &mut grid);
+
+        grid.update_grid();
         // Calculate FPS
         frame_count += 1;
         let now = Instant::now();
@@ -122,3 +142,4 @@ fn main() {
         ::std::thread::sleep(Duration::new(0, 1_000_000_000u32 / 165));
     };
 }
+

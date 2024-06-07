@@ -1,7 +1,5 @@
 use crate::api::Api;
 use crate::logic::{Cell, IS_EMPTY};
-use crate::materials::Material;
-use crate::PARTICLE_SIZE;
 #[derive(Clone, Debug, PartialEq)]
 pub struct Grid {
     pub width: i32,
@@ -29,7 +27,7 @@ impl Grid {
    
     pub fn update_grid(&mut self) {
         for x in (0..self.width) {
-            for y in (0..self.height-PARTICLE_SIZE) {
+            for y in (0..self.height) {
                 let cell = self.get_cell_state(x, y);
                 Grid::update_cell(cell, Api { x, y, grid: self });
                 
